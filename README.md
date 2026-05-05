@@ -42,34 +42,6 @@ services:
     restart: unless-stopped
 ```
 
-## Kubernetes (K3s with Terraform)
-
-```hcl
-module "qbit_voter" {
-  source  = "alemuro/expose-service-ingress/kubernetes"
-  version = "1.5.0"
-
-  namespace     = local.namespace_homeflix
-  node_selector = local.node_homeflix
-
-  name           = "qbit-voter"
-  image          = "ghcr.io/YOUR_USERNAME/qbit-voter:latest"
-  domains        = ["voter.${local.public_domain}"]
-  container_port = "3000"
-
-  environment_variables = {
-    QBIT_URL  = "http://qbittorrent:8080"
-    QBIT_USER = "your_user"
-    QBIT_PASS = "your_password"
-  }
-
-  resources = {
-    requests = { cpu = "50m", memory = "64Mi" }
-    limits   = { memory = "128Mi" }
-  }
-}
-```
-
 ## Environment variables
 
 | Variable | Required | Default | Description |
