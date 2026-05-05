@@ -10,7 +10,7 @@ Web app to list untagged torrents from qBittorrent and vote on them directly fro
 2. Lists all torrents that have **no tags**
 3. Extracts the voting URL from each torrent's comment field
 4. Lets you open the voting page directly and mark torrents as voted
-5. Once marked as voted, the torrent gets tagged as `votat` in qBittorrent
+5. Once marked as voted, the torrent gets tagged as `Liked` in qBittorrent
 
 ## Quick start
 
