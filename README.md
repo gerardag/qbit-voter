@@ -22,7 +22,6 @@ mkdir -p data
 docker run -d \
   --name qbit-voter \
   -p 3000:3000 \
-  -v ./data:/app/data \
   ghcr.io/YOUR_USERNAME/qbit-voter:latest
 ```
 
@@ -51,8 +50,6 @@ services:
     image: ghcr.io/YOUR_USERNAME/qbit-voter:latest
     ports:
       - "3000:3000"
-    volumes:
-      - ./data:/app/data
     restart: unless-stopped
 ```
 
@@ -91,8 +88,7 @@ If you were using environment variables and want to switch to UI-managed config:
 
 1. Start the app as usual with your existing env vars
 2. On first boot, values are automatically written to `data/config.json` and a notification appears in the UI
-3. Mount the `data` directory as a volume so it persists across container restarts
-4. Optionally remove the environment variables — `data/config.json` takes precedence
+3. Optionally remove the environment variables — `data/config.json` takes precedence
 
 ## Development
 
