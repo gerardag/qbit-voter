@@ -10,7 +10,7 @@ Web app to list untagged torrents from qBittorrent and vote on them directly fro
 2. Lists all torrents that have **no tags**
 3. Extracts the voting URL from each torrent's comment field
 4. Lets you open the voting page directly and mark torrents as voted
-5. Once marked as voted, the torrent gets tagged as `Liked` in qBittorrent
+5. Once marked as voted, the torrent gets tagged as `votat` in qBittorrent
 
 ## Quick start
 
@@ -21,7 +21,6 @@ docker run -d \
   -e QBIT_URL=http://your-qbittorrent:8080 \
   -e QBIT_USER=admin \
   -e QBIT_PASS=adminadmin \
-  - e VOTED_TAG=Liked \
   ghcr.io/YOUR_USERNAME/qbit-voter:latest
 ```
 
@@ -32,7 +31,7 @@ Then open `http://localhost:3000` in your browser.
 ```yaml
 services:
   qbit-voter:
-    image: ghcr.io/gerardag/qbit-voter:latest
+    image: ghcr.io/YOUR_USERNAME/qbit-voter:latest
     container_port: 3000
     ports:
       - "3000:3000"
@@ -40,8 +39,35 @@ services:
       - QBIT_URL=http://qbittorrent:8080
       - QBIT_USER=admin
       - QBIT_PASS=adminadmin
-      - VOTED_TAG=Liked
     restart: unless-stopped
+```
+
+## Kubernetes (K3s with Terraform)
+
+```hcl
+module "qbit_voter" {
+  source  = "alemuro/expose-service-ingress/kubernetes"
+  version = "1.5.0"
+
+  namespace     = local.namespace_homeflix
+  node_selector = local.node_homeflix
+
+  name           = "qbit-voter"
+  image          = "ghcr.io/YOUR_USERNAME/qbit-voter:latest"
+  domains        = ["voter.${local.public_domain}"]
+  container_port = "3000"
+
+  environment_variables = {
+    QBIT_URL  = "http://qbittorrent:8080"
+    QBIT_USER = "your_user"
+    QBIT_PASS = "your_password"
+  }
+
+  resources = {
+    requests = { cpu = "50m", memory = "64Mi" }
+    limits   = { memory = "128Mi" }
+  }
+}
 ```
 
 ## Environment variables

@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -49,6 +50,20 @@ app.use(express.json());
 // API: get app config
 app.get('/api/config', (req, res) => {
   res.json({ votedTag: VOTED_TAG });
+});
+
+// API: list available locales
+app.get('/api/locales', (req, res) => {
+  const localesDir = path.join(__dirname, 'public', 'locales');
+  try {
+    const files = fs.readdirSync(localesDir);
+    const langs = files
+      .filter(f => f.endsWith('.json'))
+      .map(f => f.replace('.json', ''));
+    res.json(langs);
+  } catch (err) {
+    res.json(['en']);
+  }
 });
 
 // API: get untagged torrents

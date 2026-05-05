@@ -1,0 +1,10 @@
+{
+  "pending": "Pendents:",
+  "refresh": "↻ Refrescar",
+  "connecting": "Connectant amb qBittorrent...",
+  "allTagged": "Tots els torrents tenen etiqueta!",
+  "vote": "★ Votar",
+  "done": "✓ Fet",
+  "noUrl": "Sense URL",
+  "errorConnecting": "✗ Error connectant amb qBittorrent"
+}

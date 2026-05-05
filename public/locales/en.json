@@ -1,0 +1,10 @@
+{
+  "pending": "Pending:",
+  "refresh": "↻ Refresh",
+  "connecting": "Connecting to qBittorrent...",
+  "allTagged": "All torrents are tagged!",
+  "vote": "★ Vote",
+  "done": "✓ Done",
+  "noUrl": "No URL",
+  "errorConnecting": "✗ Error connecting to qBittorrent"
+}
