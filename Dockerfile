@@ -8,6 +8,8 @@ RUN npm install --production
 COPY server.js ./
 COPY public/ ./public/
 
+RUN mkdir -p /app/data && chown -R node:node /app/data
+
 EXPOSE 3000
 
 USER node

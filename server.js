@@ -5,7 +5,7 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const CONFIG_PATH = path.join(__dirname, 'config.json');
+const CONFIG_PATH = path.join(__dirname, 'data', 'config.json');
 
 let migratedFromEnv = false;
 

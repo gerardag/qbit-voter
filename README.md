@@ -17,14 +17,16 @@ Web app to list untagged torrents from qBittorrent and vote on them directly fro
 ### Option A — Configure via the UI (recommended)
 
 ```bash
+mkdir -p data
+
 docker run -d \
   --name qbit-voter \
   -p 3000:3000 \
-  -v /your/path/config.json:/app/config.json \
+  -v ./data:/app/data \
   ghcr.io/YOUR_USERNAME/qbit-voter:latest
 ```
 
-Open `http://localhost:3000`, click the ⚙ icon in the header, fill in your qBittorrent details and save. Settings are persisted to `config.json` and shared across all browsers and devices.
+Open `http://localhost:3000`, click the ⚙ icon in the header, fill in your qBittorrent details and save. Settings are persisted to `data/config.json` and shared across all browsers and devices.
 
 ### Option B — Configure via environment variables
 
@@ -39,7 +41,7 @@ docker run -d \
   ghcr.io/YOUR_USERNAME/qbit-voter:latest
 ```
 
-On first boot the values are automatically migrated to `config.json`. A notification bar confirms the migration. After that you can manage settings from the UI and remove the environment variables if you wish.
+On first boot the values are automatically migrated to `data/config.json`. A notification bar confirms the migration. After that you can manage settings from the UI and remove the environment variables if you wish.
 
 ## Docker Compose
 
@@ -50,13 +52,19 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./config.json:/app/config.json
+      - ./data:/app/data
     restart: unless-stopped
+```
+
+Create the data directory before starting:
+
+```bash
+mkdir -p data
 ```
 
 ## Configuration
 
-Settings are stored in `config.json` on the server and are shared across all browsers and devices. You can edit them at any time from the ⚙ settings menu in the app — no restart required.
+Settings are stored in `data/config.json` on the server and are shared across all browsers and devices. You can edit them at any time from the ⚙ settings menu in the app — no restart required.
 
 | Field | Default | Description |
 |-------|---------|-------------|
@@ -82,9 +90,9 @@ Environment variables are supported for backwards compatibility and initial setu
 If you were using environment variables and want to switch to UI-managed config:
 
 1. Start the app as usual with your existing env vars
-2. On first boot, values are automatically written to `config.json` and a notification appears in the UI
-3. Mount `config.json` as a volume so it persists across container restarts
-4. Optionally remove the environment variables — `config.json` takes precedence
+2. On first boot, values are automatically written to `data/config.json` and a notification appears in the UI
+3. Mount the `data` directory as a volume so it persists across container restarts
+4. Optionally remove the environment variables — `data/config.json` takes precedence
 
 ## Development
 
@@ -99,7 +107,7 @@ To seed an initial configuration without using the UI:
 QBIT_URL=http://localhost:8080 QBIT_USER=admin QBIT_PASS=admin node server.js
 ```
 
-This will write a `config.json` on first run.
+This will write a `data/config.json` on first run.
 
 ## License
 
