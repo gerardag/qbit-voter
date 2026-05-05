@@ -3,8 +3,16 @@ name: Build and Push Docker Image
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - 'docs/**'
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - 'docs/**'
 
 env:
   REGISTRY: ghcr.io
@@ -30,11 +38,11 @@ jobs:
         uses: paulhatch/semantic-version@v5.4.0
         with:
           tag_prefix: "v"
-          major_pattern: "(MAJOR)"
-          minor_pattern: "(MINOR)"
+          major_pattern: "/^(feat|fix|refactor|perf)(!:|.*BREAKING CHANGE)/"
+          minor_pattern: "/^feat/"
           version_format: "${major}.${minor}.${patch}"
           bump_each_commit: true
-          bump_each_commit_patch_pattern: ""
+          bump_each_commit_patch_pattern: "/^(fix|refactor|perf)/"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
