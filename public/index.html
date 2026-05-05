@@ -10,11 +10,18 @@
 </head>
 <body>
   <div class="noise"></div>
+  <div class="notification-bar" id="notification-bar" hidden>
+    <span id="notification-text"></span>
+    <button class="notification-close" onclick="app.dismissNotification()">✕</button>
+  </div>
   <div class="container">
     <header>
       <div class="header-top">
         <h1><span class="dot"></span> qbit-voter</h1>
-        <div class="lang-switcher" id="lang-switcher"></div>
+        <div class="header-controls">
+          <div class="lang-switcher" id="lang-switcher"></div>
+          <button class="settings-btn" id="settings-btn" onclick="app.openSettings()" title="Settings">⚙</button>
+        </div>
       </div>
       <div class="stats">
         <span id="pending-label"></span>
@@ -28,6 +35,40 @@
         <span id="loading-text"></span>
       </div>
     </main>
+  </div>
+
+  <!-- Settings modal -->
+  <div class="modal-overlay" id="modal-overlay" onclick="app.closeSettings()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 id="modal-title"></h2>
+        <button class="modal-close" onclick="app.closeSettings()">✕</button>
+      </div>
+      <form id="settings-form" onsubmit="app.saveSettings(event)">
+        <div class="form-group">
+          <label for="input-qbitUrl" id="label-qbitUrl"></label>
+          <input type="url" id="input-qbitUrl" name="qbitUrl" required placeholder="http://localhost:8080">
+        </div>
+        <div class="form-group">
+          <label for="input-qbitUser" id="label-qbitUser"></label>
+          <input type="text" id="input-qbitUser" name="qbitUser" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="input-qbitPass" id="label-qbitPass"></label>
+          <input type="password" id="input-qbitPass" name="qbitPass" autocomplete="current-password" id="label-qbitPassPlaceholder">
+        </div>
+        <div class="form-group">
+          <label for="input-votedTag" id="label-votedTag"></label>
+          <input type="text" id="input-votedTag" name="votedTag" required>
+        </div>
+        <div class="modal-feedback" id="modal-feedback"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn-modal-test" id="btn-test" onclick="app.testConnection()"></button>
+          <button type="button" class="btn-modal-cancel" onclick="app.closeSettings()" id="btn-cancel"></button>
+          <button type="submit" class="btn-modal-save" id="btn-save"></button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script src="/js/i18n.js"></script>

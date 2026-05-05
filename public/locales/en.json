@@ -6,5 +6,19 @@
   "vote": "★ Vote",
   "done": "✓ Done",
   "noUrl": "No URL",
-  "errorConnecting": "✗ Error connecting to qBittorrent"
+  "errorConnecting": "✗ Error connecting to qBittorrent",
+  "settings": "Settings",
+  "settingsTitle": "Connection Settings",
+  "qbitUrl": "qBittorrent URL",
+  "qbitUser": "Username",
+  "qbitPass": "Password",
+  "qbitPassPlaceholder": "Leave blank to keep current",
+  "votedTag": "Voted Tag",
+  "save": "Save",
+  "cancel": "Cancel",
+  "settingsSaved": "Settings saved",
+  "settingsError": "Error saving settings",
+  "testConnection": "Test connection",
+  "notConfigured": "Open settings to get started.",
+  "migratedFromEnv": "Settings have been migrated from environment variables to config.json. You can now manage them from the settings menu."
 }

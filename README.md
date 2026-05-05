@@ -14,6 +14,20 @@ Web app to list untagged torrents from qBittorrent and vote on them directly fro
 
 ## Quick start
 
+### Option A — Configure via the UI (recommended)
+
+```bash
+docker run -d \
+  --name qbit-voter \
+  -p 3000:3000 \
+  -v /your/path/config.json:/app/config.json \
+  ghcr.io/YOUR_USERNAME/qbit-voter:latest
+```
+
+Open `http://localhost:3000`, click the ⚙ icon in the header, fill in your qBittorrent details and save. Settings are persisted to `config.json` and shared across all browsers and devices.
+
+### Option B — Configure via environment variables
+
 ```bash
 docker run -d \
   --name qbit-voter \
@@ -25,7 +39,7 @@ docker run -d \
   ghcr.io/YOUR_USERNAME/qbit-voter:latest
 ```
 
-Then open `http://localhost:3000` in your browser.
+On first boot the values are automatically migrated to `config.json`. A notification bar confirms the migration. After that you can manage settings from the UI and remove the environment variables if you wish.
 
 ## Docker Compose
 
@@ -33,33 +47,59 @@ Then open `http://localhost:3000` in your browser.
 services:
   qbit-voter:
     image: ghcr.io/YOUR_USERNAME/qbit-voter:latest
-    container_port: 3000
     ports:
       - "3000:3000"
-    environment:
-      - QBIT_URL=http://qbittorrent:8080
-      - QBIT_USER=admin
-      - QBIT_PASS=adminadmin
-      - VOTED_TAG=Liked
+    volumes:
+      - ./config.json:/app/config.json
     restart: unless-stopped
 ```
 
+## Configuration
+
+Settings are stored in `config.json` on the server and are shared across all browsers and devices. You can edit them at any time from the ⚙ settings menu in the app — no restart required.
+
+| Field | Default | Description |
+|-------|---------|-------------|
+| qBittorrent URL | `http://localhost:8080` | URL of your qBittorrent Web UI |
+| Username | `admin` | qBittorrent username |
+| Password | `adminadmin` | qBittorrent password |
+| Voted tag | `Liked` | Tag applied to torrents after voting |
+
 ## Environment variables
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `QBIT_URL` | Yes | `http://localhost:8080` | qBittorrent Web UI URL |
-| `QBIT_USER` | Yes | `admin` | qBittorrent username |
-| `QBIT_PASS` | Yes | `adminadmin` | qBittorrent password |
-| `VOTED_TAG` | No | `Liked` | Tag applied to torrents after voting |
-| `PORT` | No | `3000` | Port the app listens on |
+Environment variables are supported for backwards compatibility and initial setup. If `config.json` already exists they are ignored.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `QBIT_URL` | `http://localhost:8080` | qBittorrent Web UI URL |
+| `QBIT_USER` | `admin` | qBittorrent username |
+| `QBIT_PASS` | `adminadmin` | qBittorrent password |
+| `VOTED_TAG` | `Liked` | Tag applied to torrents after voting |
+| `PORT` | `3000` | Port the app listens on |
+
+## Migrating from environment variables
+
+If you were using environment variables and want to switch to UI-managed config:
+
+1. Start the app as usual with your existing env vars
+2. On first boot, values are automatically written to `config.json` and a notification appears in the UI
+3. Mount `config.json` as a volume so it persists across container restarts
+4. Optionally remove the environment variables — `config.json` takes precedence
 
 ## Development
 
 ```bash
 npm install
+node server.js
+```
+
+To seed an initial configuration without using the UI:
+
+```bash
 QBIT_URL=http://localhost:8080 QBIT_USER=admin QBIT_PASS=admin node server.js
 ```
+
+This will write a `config.json` on first run.
 
 ## License
 

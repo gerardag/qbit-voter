@@ -6,5 +6,19 @@
   "vote": "★ Votar",
   "done": "✓ Fet",
   "noUrl": "Sense URL",
-  "errorConnecting": "✗ Error connectant amb qBittorrent"
+  "errorConnecting": "✗ Error connectant amb qBittorrent",
+  "settings": "Configuració",
+  "settingsTitle": "Configuració de la connexió",
+  "qbitUrl": "URL de qBittorrent",
+  "qbitUser": "Usuari",
+  "qbitPass": "Contrasenya",
+  "qbitPassPlaceholder": "Deixa en blanc per mantenir l'actual",
+  "votedTag": "Etiqueta de \"votat\"",
+  "save": "Desar",
+  "cancel": "Cancel·lar",
+  "settingsSaved": "Configuració desada",
+  "settingsError": "Error desant la configuració",
+  "testConnection": "Prova la connexió",
+  "notConfigured": "Configura la connexió a qBittorrent per començar.",
+  "migratedFromEnv": "La configuració s'ha migrat de les variables d'entorn a config.json. Ara la pots gestionar des del menú de configuració."
 }

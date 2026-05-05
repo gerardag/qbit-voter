@@ -5,18 +5,52 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const QBIT_URL = process.env.QBIT_URL || 'http://localhost:8080';
-const QBIT_USER = process.env.QBIT_USER || 'admin';
-const QBIT_PASS = process.env.QBIT_PASS || 'adminadmin';
-const VOTED_TAG = process.env.VOTED_TAG || 'Liked';
+const CONFIG_PATH = path.join(__dirname, 'config.json');
 
+let migratedFromEnv = false;
+
+function loadConfig() {
+  if (fs.existsSync(CONFIG_PATH)) {
+    try {
+      return { ...JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8')), configured: true };
+    } catch {}
+  }
+
+  const fromEnv = !!(process.env.QBIT_URL || process.env.QBIT_USER || process.env.QBIT_PASS);
+  const cfg = {
+    qbitUrl: process.env.QBIT_URL || 'http://localhost:8080',
+    qbitUser: process.env.QBIT_USER || 'admin',
+    qbitPass: process.env.QBIT_PASS || 'adminadmin',
+    votedTag: process.env.VOTED_TAG || 'Liked',
+    configured: fromEnv
+  };
+
+  if (fromEnv) {
+    try {
+      const { configured, ...toSave } = cfg;
+      fs.writeFileSync(CONFIG_PATH, JSON.stringify(toSave, null, 2), 'utf8');
+      migratedFromEnv = true;
+      console.log('Migrated configuration from environment variables to config.json');
+    } catch (err) {
+      console.warn('Could not migrate env vars to config.json:', err.message);
+    }
+  }
+
+  return cfg;
+}
+
+function saveConfig(config) {
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2), 'utf8');
+}
+
+let config = loadConfig();
 let sessionCookie = null;
 
 async function qbitLogin() {
-  const res = await fetch(`${QBIT_URL}/api/v2/auth/login`, {
+  const res = await fetch(`${config.qbitUrl}/api/v2/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `username=${encodeURIComponent(QBIT_USER)}&password=${encodeURIComponent(QBIT_PASS)}`
+    body: `username=${encodeURIComponent(config.qbitUser)}&password=${encodeURIComponent(config.qbitPass)}`
   });
   const setCookie = res.headers.get('set-cookie');
   if (setCookie) {
@@ -28,14 +62,14 @@ async function qbitLogin() {
 async function qbitRequest(endpoint, options = {}) {
   if (!sessionCookie) await qbitLogin();
 
-  let res = await fetch(`${QBIT_URL}${endpoint}`, {
+  let res = await fetch(`${config.qbitUrl}${endpoint}`, {
     ...options,
     headers: { 'Cookie': sessionCookie, ...(options.headers || {}) }
   });
 
   if (res.status === 403) {
     await qbitLogin();
-    res = await fetch(`${QBIT_URL}${endpoint}`, {
+    res = await fetch(`${config.qbitUrl}${endpoint}`, {
       ...options,
       headers: { 'Cookie': sessionCookie, ...(options.headers || {}) }
     });
@@ -47,9 +81,64 @@ async function qbitRequest(endpoint, options = {}) {
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// API: get app config
+// API: get app config (excludes password)
 app.get('/api/config', (req, res) => {
-  res.json({ votedTag: VOTED_TAG });
+  res.json({
+    qbitUrl: config.qbitUrl,
+    qbitUser: config.qbitUser,
+    votedTag: config.votedTag,
+    configured: config.configured ?? false,
+    migratedFromEnv
+  });
+});
+
+// API: test connection with provided credentials
+app.post('/api/config/test', async (req, res) => {
+  const { qbitUrl, qbitUser, qbitPass } = req.body;
+
+  if (!qbitUrl || !qbitUser) {
+    return res.status(400).json({ ok: false, error: 'qbitUrl and qbitUser are required' });
+  }
+
+  try {
+    const loginRes = await fetch(`${qbitUrl.trim().replace(/\/$/, '')}/api/v2/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `username=${encodeURIComponent(qbitUser)}&password=${encodeURIComponent(qbitPass || config.qbitPass)}`
+    });
+    const text = await loginRes.text();
+    if (!loginRes.ok) {
+      res.json({ ok: false, error: `HTTP ${loginRes.status}` });
+    } else if (text.trim().toLowerCase().includes('fail')) {
+      res.json({ ok: false, error: 'Invalid credentials' });
+    } else {
+      res.json({ ok: true });
+    }
+  } catch (err) {
+    res.json({ ok: false, error: err.message });
+  }
+});
+
+// API: update app config
+app.put('/api/config', (req, res) => {
+  const { qbitUrl, qbitUser, qbitPass, votedTag } = req.body;
+
+  if (!qbitUrl || !qbitUser || !votedTag) {
+    return res.status(400).json({ error: 'qbitUrl, qbitUser and votedTag are required' });
+  }
+
+  config = {
+    qbitUrl: qbitUrl.trim().replace(/\/$/, ''),
+    qbitUser: qbitUser.trim(),
+    qbitPass: qbitPass || config.qbitPass,
+    votedTag: votedTag.trim(),
+    configured: true
+  };
+
+  saveConfig(config);
+  sessionCookie = null; // force re-login with new credentials
+
+  res.json({ success: true });
 });
 
 // API: list available locales
@@ -105,7 +194,7 @@ app.post('/api/torrents/:hash/voted', async (req, res) => {
     await qbitRequest('/api/v2/torrents/addTags', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `hashes=${hash}&tags=${encodeURIComponent(VOTED_TAG)}`
+      body: `hashes=${hash}&tags=${encodeURIComponent(config.votedTag)}`
     });
     res.json({ success: true });
   } catch (err) {
