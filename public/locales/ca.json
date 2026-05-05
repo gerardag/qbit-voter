@@ -20,5 +20,8 @@
   "settingsError": "Error desant la configuració",
   "testConnection": "Prova la connexió",
   "notConfigured": "Configura la connexió a qBittorrent per començar.",
-  "migratedFromEnv": "La configuració s'ha migrat de les variables d'entorn a config.json. Ara la pots gestionar des del menú de configuració."
+  "migratedFromEnv": "La configuració s'ha migrat de les variables d'entorn a config.json. Ara la pots gestionar des del menú de configuració.",
+  "markAllLiked": "✓ Marcar tots com a Liked",
+  "markAllConfirm": "Segur que vols marcar tots els torrents pendents com a Liked? Aquesta acció no es pot desfer.",
+  "confirm": "Confirmar"
 }

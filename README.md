@@ -103,6 +103,12 @@ To seed an initial configuration without using the UI:
 QBIT_URL=http://localhost:8080 QBIT_USER=admin QBIT_PASS=admin node server.js
 ```
 
+If you want to run a local dummy data:
+
+```bash
+DUMMY_MODE=true node server.js
+```
+
 This will write a `data/config.json` on first run.
 
 ## License

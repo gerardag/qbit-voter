@@ -20,5 +20,8 @@
   "settingsError": "Error saving settings",
   "testConnection": "Test connection",
   "notConfigured": "Open settings to get started.",
-  "migratedFromEnv": "Settings have been migrated from environment variables to config.json. You can now manage them from the settings menu."
+  "migratedFromEnv": "Settings have been migrated from environment variables to config.json. You can now manage them from the settings menu.",
+  "markAllLiked": "✓ Mark all as Liked",
+  "markAllConfirm": "Are you sure you want to mark all pending torrents as Liked? This action cannot be undone.",
+  "confirm": "Confirm"
 }

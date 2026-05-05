@@ -32,6 +32,9 @@ const app = (() => {
     if (refreshBtn) refreshBtn.textContent = i18n.t('refresh');
     if (settingsBtn) settingsBtn.title = i18n.t('settings');
 
+    const markAllBtn = document.getElementById('mark-all-btn');
+    if (markAllBtn) markAllBtn.textContent = i18n.t('markAllLiked');
+
     document.getElementById('modal-title').textContent = i18n.t('settingsTitle');
     document.getElementById('label-qbitUrl').textContent = i18n.t('qbitUrl');
     document.getElementById('label-qbitUser').textContent = i18n.t('qbitUser');
@@ -41,6 +44,11 @@ const app = (() => {
     document.getElementById('btn-cancel').textContent = i18n.t('cancel');
     document.getElementById('btn-save').textContent = i18n.t('save');
     document.getElementById('btn-test').textContent = i18n.t('testConnection');
+
+    document.getElementById('confirm-title').textContent = i18n.t('markAllLiked');
+    document.getElementById('confirm-body').textContent = i18n.t('markAllConfirm');
+    document.getElementById('confirm-cancel').textContent = i18n.t('cancel');
+    document.getElementById('confirm-ok').textContent = i18n.t('confirm');
   }
 
   function render() {
@@ -59,6 +67,13 @@ const app = (() => {
           <p>${i18n.t('allTagged')}</p>
         </div>`;
       return;
+    }
+
+    const listHeader = document.getElementById('list-header');
+    const pendingCount = torrents.filter(t => !t.voted).length;
+    if (listHeader) {
+      if (pendingCount > 0) listHeader.removeAttribute('hidden');
+      else listHeader.setAttribute('hidden', '');
     }
 
     appEl.innerHTML = `
@@ -95,6 +110,32 @@ const app = (() => {
       }
     } catch (err) {
       console.error('Error marking as voted:', err);
+    }
+  }
+
+  function openMarkAllConfirm() {
+    document.getElementById('confirm-overlay').classList.add('open');
+  }
+
+  function closeMarkAllConfirm() {
+    document.getElementById('confirm-overlay').classList.remove('open');
+  }
+
+  async function markAllLiked() {
+    closeMarkAllConfirm();
+    const pending = torrents.filter(t => !t.voted);
+    try {
+      const res = await fetch('/api/torrents/mark-all-liked', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hashes: pending.map(t => t.hash) })
+      });
+      if (res.ok) {
+        torrents.forEach(t => t.voted = true);
+        render();
+      }
+    } catch (err) {
+      console.error('Error marking all as liked:', err);
     }
   }
 
@@ -136,6 +177,7 @@ const app = (() => {
     try {
       const cfg = await loadConfig();
       if (!cfg || !cfg.configured) {
+        document.getElementById('list-header')?.setAttribute('hidden', '');
         appEl.innerHTML = `
           <div class="empty">
             <div class="icon">⚙</div>
@@ -149,6 +191,7 @@ const app = (() => {
       torrents.forEach(t => t.voted = false);
       render();
     } catch (err) {
+      document.getElementById('list-header')?.setAttribute('hidden', '');
       appEl.innerHTML = `
         <div class="error">
           ${i18n.t('errorConnecting')}<br>
@@ -276,7 +319,7 @@ const app = (() => {
     await loadTorrents();
   }
 
-  return { init, loadTorrents, markVoted, switchLang, openSettings, closeSettings, saveSettings, testConnection, dismissNotification };
+  return { init, loadTorrents, markVoted, switchLang, openSettings, closeSettings, saveSettings, testConnection, dismissNotification, openMarkAllConfirm, closeMarkAllConfirm, markAllLiked };
 })();
 
 document.addEventListener('DOMContentLoaded', () => app.init());

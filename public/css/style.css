@@ -526,6 +526,44 @@ header h1 .dot {
   cursor: not-allowed;
 }
 
+.list-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+.list-header[hidden] { display: none; }
+
+.mark-all-btn {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mark-all-btn:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.confirm-modal {
+  max-width: 360px;
+}
+
+.confirm-body {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
 @media (max-width: 600px) {
   .torrent-item {
     flex-direction: column;

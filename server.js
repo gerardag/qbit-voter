@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const DUMMY_MODE = process.env.DUMMY_MODE === 'true';
 
 const CONFIG_PATH = path.join(__dirname, 'data', 'config.json');
 
@@ -155,8 +156,21 @@ app.get('/api/locales', (req, res) => {
   }
 });
 
+const DUMMY_TORRENTS = [
+  { name: 'Ubuntu 24.04 LTS Desktop AMD64', url: 'https://example.com/vote/1', hash: 'aabbcc001122', size: 5368709120, progress: 1, state: 'seeding' },
+  { name: 'Debian 12 Bookworm NetInst', url: 'https://example.com/vote/2', hash: 'aabbcc003344', size: 402653184, progress: 1, state: 'seeding' },
+  { name: 'Arch Linux 2024.01.01', url: null, hash: 'aabbcc005566', size: 872415232, progress: 0.45, state: 'downloading' },
+  { name: 'Fedora Workstation 39 x86_64', url: 'https://example.com/vote/4', hash: 'aabbcc007788', size: 2147483648, progress: 1, state: 'seeding' },
+  { name: 'Linux Mint 21.3 Cinnamon', url: 'https://example.com/vote/5', hash: 'aabbcc009900', size: 2684354560, progress: 1, state: 'seeding' },
+  { name: 'Pop!_OS 22.04 LTS NVIDIA', url: 'https://example.com/vote/6', hash: 'aabbcc00aabb', size: 2415919104, progress: 0.8, state: 'downloading' },
+];
+
 // API: get untagged torrents
 app.get('/api/torrents', async (req, res) => {
+  if (DUMMY_MODE) {
+    return res.json(DUMMY_TORRENTS.map(t => ({ ...t })));
+  }
+
   try {
     const torrentsRes = await qbitRequest('/api/v2/torrents/info');
     const torrents = await torrentsRes.json();
@@ -189,6 +203,8 @@ app.get('/api/torrents', async (req, res) => {
 
 // API: tag torrent as voted
 app.post('/api/torrents/:hash/voted', async (req, res) => {
+  if (DUMMY_MODE) return res.json({ success: true });
+
   try {
     const { hash } = req.params;
     await qbitRequest('/api/v2/torrents/addTags', {
@@ -199,6 +215,27 @@ app.post('/api/torrents/:hash/voted', async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     console.error('Error tagging torrent:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// API: tag all torrents as voted
+app.post('/api/torrents/mark-all-liked', async (req, res) => {
+  if (DUMMY_MODE) return res.json({ success: true });
+
+  try {
+    const { hashes } = req.body;
+    if (!Array.isArray(hashes) || hashes.length === 0) {
+      return res.status(400).json({ error: 'hashes array required' });
+    }
+    await qbitRequest('/api/v2/torrents/addTags', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: `hashes=${hashes.join('|')}&tags=${encodeURIComponent(config.votedTag)}`
+    });
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Error tagging all torrents:', err);
     res.status(500).json({ error: err.message });
   }
 });

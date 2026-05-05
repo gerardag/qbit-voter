@@ -29,12 +29,30 @@
         <button class="refresh-btn" onclick="app.loadTorrents()" id="refresh-btn"></button>
       </div>
     </header>
+    <div class="list-header" id="list-header" hidden>
+      <button class="mark-all-btn" id="mark-all-btn" onclick="app.openMarkAllConfirm()"></button>
+    </div>
     <main id="app">
       <div class="loading">
         <div class="spinner"></div>
         <span id="loading-text"></span>
       </div>
     </main>
+  </div>
+
+  <!-- Mark all confirm modal -->
+  <div class="modal-overlay" id="confirm-overlay" onclick="app.closeMarkAllConfirm()">
+    <div class="modal confirm-modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 id="confirm-title"></h2>
+        <button class="modal-close" onclick="app.closeMarkAllConfirm()">✕</button>
+      </div>
+      <p class="confirm-body" id="confirm-body"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-modal-cancel" onclick="app.closeMarkAllConfirm()" id="confirm-cancel"></button>
+        <button type="button" class="btn-modal-save" id="confirm-ok" onclick="app.markAllLiked()"></button>
+      </div>
+    </div>
   </div>
 
   <!-- Settings modal -->
