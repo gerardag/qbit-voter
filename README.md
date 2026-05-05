@@ -32,7 +32,7 @@ Then open `http://localhost:3000` in your browser.
 ```yaml
 services:
   qbit-voter:
-    image: ghcr.io/YOUR_USERNAME/qbit-voter:latest
+    image: ghcr.io/gerardag/qbit-voter:latest
     container_port: 3000
     ports:
       - "3000:3000"
