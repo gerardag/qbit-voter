@@ -281,15 +281,15 @@
     <header>
       <h1><span class="dot"></span> qbit-voter</h1>
       <div class="stats">
-        <span>Pending: <strong id="count">—</strong></span>
+        <span>Pendents: <strong id="count">—</strong></span>
         <span>|</span>
-        <button class="refresh-btn" onclick="loadTorrents()">↻ Refresh</button>
+        <button class="refresh-btn" onclick="loadTorrents()">↻ Refescar</button>
       </div>
     </header>
     <main id="app">
       <div class="loading">
         <div class="spinner"></div>
-        Connecting to qBittorrent...
+        Connectant a qBittorrent...
       </div>
     </main>
   </div>
@@ -315,7 +315,7 @@
         app.innerHTML = `
           <div class="empty">
             <div class="icon">✓</div>
-            <p>All torrents are tagged!</p>
+            <p>Tots els torrents estan etiquetats!</p>
           </div>`;
         return;
       }
@@ -334,9 +334,9 @@
                 ${t.voted
                   ? `<span class="btn btn-voted">✓ ${escapeHtml(votedTag)}</span>`
                   : t.url
-                    ? `<a class="btn btn-vote" href="${escapeHtml(t.url)}" target="_blank" rel="noopener">★ Vote</a>
-                       <button class="btn btn-done" onclick="markVoted(${i})">✓ Done</button>`
-                    : `<span class="btn btn-no-url">No URL</span>`
+                    ? `<a class="btn btn-vote" href="${escapeHtml(t.url)}" target="_blank" rel="noopener">★ Votar</a>
+                       <button class="btn btn-done" onclick="markVoted(${i})">✓ Fet</button>`
+                    : `<span class="btn btn-no-url">Sense URL</span>`
                 }
               </div>
             </div>
@@ -359,7 +359,7 @@
           render();
         }
       } catch (err) {
-        console.error('Error marking as voted:', err);
+        console.error('Error al marcar com a votat:', err);
       }
     }
 
@@ -371,7 +371,7 @@
           votedTag = config.votedTag;
         }
       } catch (err) {
-        console.error('Error loading config:', err);
+        console.error('Error al carregar la configuració:', err);
       }
     }
 
@@ -380,7 +380,7 @@
       app.innerHTML = `
         <div class="loading">
           <div class="spinner"></div>
-          Connecting to qBittorrent...
+          Connectant a qBittorrent...
         </div>`;
 
       try {
@@ -393,7 +393,7 @@
       } catch (err) {
         app.innerHTML = `
           <div class="error">
-            ✗ Error connecting to qBittorrent<br>
+            ✗ Error connectant a qBittorrent<br>
             <small>${escapeHtml(err.message)}</small>
           </div>`;
       }
