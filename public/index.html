@@ -296,6 +296,7 @@
 
   <script>
     let torrents = [];
+    let votedTag = 'Liked';
 
     function formatSize(bytes) {
       if (bytes === 0) return '0 B';
@@ -331,7 +332,7 @@
               </div>
               <div class="torrent-actions">
                 ${t.voted
-                  ? `<span class="btn btn-voted">✓ Voted</span>`
+                  ? `<span class="btn btn-voted">✓ ${escapeHtml(votedTag)}</span>`
                   : t.url
                     ? `<a class="btn btn-vote" href="${escapeHtml(t.url)}" target="_blank" rel="noopener">★ Vote</a>
                        <button class="btn btn-done" onclick="markVoted(${i})">✓ Done</button>`
@@ -362,6 +363,18 @@
       }
     }
 
+    async function loadConfig() {
+      try {
+        const res = await fetch('/api/config');
+        if (res.ok) {
+          const config = await res.json();
+          votedTag = config.votedTag;
+        }
+      } catch (err) {
+        console.error('Error loading config:', err);
+      }
+    }
+
     async function loadTorrents() {
       const app = document.getElementById('app');
       app.innerHTML = `
@@ -371,6 +384,7 @@
         </div>`;
 
       try {
+        await loadConfig();
         const res = await fetch('/api/torrents');
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         torrents = await res.json();

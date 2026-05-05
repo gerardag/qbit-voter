@@ -77,6 +77,7 @@ module "qbit_voter" {
 | `QBIT_URL` | Yes | `http://localhost:8080` | qBittorrent Web UI URL |
 | `QBIT_USER` | Yes | `admin` | qBittorrent username |
 | `QBIT_PASS` | Yes | `adminadmin` | qBittorrent password |
+| `VOTED_TAG` | No | `Liked` | Tag applied to torrents after voting |
 | `PORT` | No | `3000` | Port the app listens on |
 
 ## Development

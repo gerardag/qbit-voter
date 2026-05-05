@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 3000;
 const QBIT_URL = process.env.QBIT_URL || 'http://localhost:8080';
 const QBIT_USER = process.env.QBIT_USER || 'admin';
 const QBIT_PASS = process.env.QBIT_PASS || 'adminadmin';
+const VOTED_TAG = process.env.VOTED_TAG || 'Liked';
 
 let sessionCookie = null;
 
@@ -44,6 +45,11 @@ async function qbitRequest(endpoint, options = {}) {
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
+
+// API: get app config
+app.get('/api/config', (req, res) => {
+  res.json({ votedTag: VOTED_TAG });
+});
 
 // API: get untagged torrents
 app.get('/api/torrents', async (req, res) => {
@@ -84,7 +90,7 @@ app.post('/api/torrents/:hash/voted', async (req, res) => {
     await qbitRequest('/api/v2/torrents/addTags', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `hashes=${hash}&tags=votat`
+      body: `hashes=${hash}&tags=${encodeURIComponent(VOTED_TAG)}`
     });
     res.json({ success: true });
   } catch (err) {
