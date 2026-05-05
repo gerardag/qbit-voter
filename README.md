@@ -21,6 +21,7 @@ docker run -d \
   -e QBIT_URL=http://your-qbittorrent:8080 \
   -e QBIT_USER=admin \
   -e QBIT_PASS=adminadmin \
+  -e VOTED_TAG=Liked \
   ghcr.io/YOUR_USERNAME/qbit-voter:latest
 ```
 
@@ -39,6 +40,7 @@ services:
       - QBIT_URL=http://qbittorrent:8080
       - QBIT_USER=admin
       - QBIT_PASS=adminadmin
+      - VOTED_TAG=Liked
     restart: unless-stopped
 ```
 
