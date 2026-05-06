@@ -20,16 +20,16 @@
         <h1><span class="dot"></span> qbit-voter</h1>
         <div class="header-controls">
           <div class="lang-switcher" id="lang-switcher"></div>
+          <button class="theme-btn" id="theme-btn" onclick="app.toggleTheme()" title="Toggle theme">☀</button>
           <button class="settings-btn" id="settings-btn" onclick="app.openSettings()" title="Settings">⚙</button>
         </div>
       </div>
       <div class="stats">
         <span id="pending-label"></span>
-        <span>|</span>
-        <button class="refresh-btn" onclick="app.loadTorrents()" id="refresh-btn"></button>
       </div>
     </header>
     <div class="list-header" id="list-header" hidden>
+      <button class="refresh-btn" onclick="app.loadTorrents()" id="refresh-btn"></button>
       <button class="mark-all-btn" id="mark-all-btn" onclick="app.openMarkAllConfirm()"></button>
     </div>
     <main id="app">

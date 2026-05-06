@@ -18,10 +18,28 @@ const app = (() => {
   function renderLangSwitcher() {
     const container = document.getElementById('lang-switcher');
     if (!container) return;
-    container.innerHTML = i18n.getLangs().map(lang =>
-      `<button class="lang-btn ${lang === i18n.getLang() ? 'active' : ''}"
-              onclick="app.switchLang('${lang}')">${lang}</button>`
+    const current = i18n.getLang();
+    const options = i18n.getLangs().map(lang =>
+      `<option value="${lang}" ${lang === current ? 'selected' : ''}>${lang.toUpperCase()}</option>`
     ).join('');
+    container.innerHTML = `<select class="lang-select" onchange="app.switchLang(this.value)">${options}</select>`;
+  }
+
+  function initTheme() {
+    const saved = localStorage.getItem('qbit-voter-theme') || 'dark';
+    applyTheme(saved);
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const btn = document.getElementById('theme-btn');
+    if (btn) btn.textContent = theme === 'dark' ? '☀' : '☾';
+    localStorage.setItem('qbit-voter-theme', theme);
+  }
+
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
   }
 
   function renderStaticUI() {
@@ -306,6 +324,7 @@ const app = (() => {
   }
 
   async function init() {
+    initTheme();
     await i18n.init();
 
     i18n.onChange(() => {
@@ -319,7 +338,7 @@ const app = (() => {
     await loadTorrents();
   }
 
-  return { init, loadTorrents, markVoted, switchLang, openSettings, closeSettings, saveSettings, testConnection, dismissNotification, openMarkAllConfirm, closeMarkAllConfirm, markAllLiked };
+  return { init, loadTorrents, markVoted, switchLang, openSettings, closeSettings, saveSettings, testConnection, dismissNotification, openMarkAllConfirm, closeMarkAllConfirm, markAllLiked, toggleTheme };
 })();
 
 document.addEventListener('DOMContentLoaded', () => app.init());
