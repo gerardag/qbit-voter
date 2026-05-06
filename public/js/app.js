@@ -314,7 +314,7 @@ const app = (() => {
       feedback.textContent = i18n.t('settingsSaved');
       feedback.classList.add('success');
       setTimeout(() => closeSettings(), 1000);
-      loadTorrents();
+      loadTorrents().catch(() => {});
     } catch (err) {
       feedback.textContent = i18n.t('settingsError');
       feedback.classList.add('error');

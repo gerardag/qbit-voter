@@ -41,6 +41,7 @@ function loadConfig() {
 }
 
 function saveConfig(config) {
+  fs.mkdirSync(path.dirname(CONFIG_PATH), { recursive: true });
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2), 'utf8');
 }
 
