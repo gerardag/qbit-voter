@@ -51,7 +51,10 @@ const app = (() => {
     if (settingsBtn) settingsBtn.title = i18n.t('settings');
 
     const markAllBtn = document.getElementById('mark-all-btn');
-    if (markAllBtn) markAllBtn.textContent = i18n.t('markAllLiked');
+    if (markAllBtn) {
+      markAllBtn.textContent = i18n.t('markAllLiked');
+      markAllBtn.disabled = true;
+    }
 
     document.getElementById('modal-title').textContent = i18n.t('settingsTitle');
     document.getElementById('label-qbitUrl').textContent = i18n.t('qbitUrl');
@@ -79,6 +82,8 @@ const app = (() => {
     if (count) count.textContent = pending.length;
 
     if (torrents.length === 0) {
+      const markAllBtnEmpty = document.getElementById('mark-all-btn');
+      if (markAllBtnEmpty) markAllBtnEmpty.disabled = true;
       appEl.innerHTML = `
         <div class="empty">
           <div class="icon">✓</div>
@@ -87,11 +92,10 @@ const app = (() => {
       return;
     }
 
-    const listHeader = document.getElementById('list-header');
+    const markAllBtn = document.getElementById('mark-all-btn');
     const pendingCount = torrents.filter(t => !t.voted).length;
-    if (listHeader) {
-      if (pendingCount > 0) listHeader.removeAttribute('hidden');
-      else listHeader.setAttribute('hidden', '');
+    if (markAllBtn) {
+      markAllBtn.disabled = pendingCount === 0;
     }
 
     appEl.innerHTML = `

@@ -562,8 +562,6 @@ header h1 .dot {
   margin-bottom: 0.75rem;
 }
 
-.list-header[hidden] { display: none; }
-
 .mark-all-btn {
   font-family: var(--mono);
   font-size: 0.7rem;
@@ -577,9 +575,14 @@ header h1 .dot {
   transition: all 0.15s ease;
 }
 
-.mark-all-btn:hover {
+.mark-all-btn:hover:not(:disabled) {
   background: var(--accent);
   color: var(--bg);
+}
+
+.mark-all-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 .confirm-modal {
