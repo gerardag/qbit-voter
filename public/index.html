@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>qbit-voter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="container">
+    <header>
+      <div class="header-top">
+        <h1><span class="dot"></span> qbit-voter</h1>
+        <div class="lang-switcher" id="lang-switcher"></div>
+      </div>
+      <div class="stats">
+        <span id="pending-label"></span>
+        <span>|</span>
+        <button class="refresh-btn" onclick="app.loadTorrents()" id="refresh-btn"></button>
+      </div>
+    </header>
+    <main id="app">
+      <div class="loading">
+        <div class="spinner"></div>
+        <span id="loading-text"></span>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

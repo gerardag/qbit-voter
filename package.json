@@ -1,0 +1,14 @@
+{
+  "name": "qbit-voter",
+  "version": "1.0.0",
+  "description": "List untagged qBittorrent torrents and vote on them",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["qbittorrent", "torrent", "voting"],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
