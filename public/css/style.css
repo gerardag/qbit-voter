@@ -302,3 +302,96 @@ header h1 .dot {
     justify-content: center;
   }
 }
+
+.header-actions { display: flex; align-items: center; gap: 0.75rem; }
+.icon-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 1rem;
+  width: 32px; height: 32px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.icon-btn:hover { color: var(--text); border-color: var(--text-dim); }
+
+.settings-page { max-width: 640px; }
+.settings-topbar {
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.settings-topbar h2 { font-size: 1.1rem; font-weight: 600; }
+
+.settings-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.settings-section h3 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.field { display: block; margin-bottom: 1rem; font-size: 0.85rem; }
+.field > span {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.field input[type="text"],
+.field input[type="password"],
+.field input[type="number"] {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 0.6rem 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+}
+.field input:focus { outline: none; border-color: var(--accent); }
+.checkbox-field { display: flex; align-items: center; gap: 0.5rem; }
+.checkbox-field > span {
+  margin: 0; text-transform: none; letter-spacing: 0;
+  font-size: 0.85rem; color: var(--text);
+}
+.checkbox-field input[type="checkbox"] { margin: 0; }
+
+.hint { font-size: 0.75rem; color: var(--text-dim); margin: 0.25rem 0 0.75rem; line-height: 1.4; }
+.row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.settings-msg { font-size: 0.8rem; min-height: 1.1em; }
+.settings-msg.ok { color: var(--accent); }
+.settings-msg.err { color: #ef4444; }
+
+.settings-footer {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+.btn-primary {
+  background: var(--accent); color: var(--bg);
+  border: none; padding: 0.55rem 1.1rem;
+  border-radius: 6px; cursor: pointer; font-weight: 600;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+}
+.btn-primary:hover { opacity: 0.9; }
+.btn-secondary {
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.55rem 1.1rem; border-radius: 6px; cursor: pointer;
+  font-family: var(--sans); font-size: 0.85rem;
+}
+.btn-secondary:hover { border-color: var(--text-dim); }
+
+.section-actions { margin-top: 0.5rem; }
