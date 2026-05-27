@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = process.env.PORT || 3010;
+const PORT = process.env.PORT || 3000;
 
 const CONFIG_PATH = process.env.CONFIG_PATH || path.join(__dirname, 'config.json');
 
