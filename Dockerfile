@@ -10,6 +10,7 @@ COPY public/ ./public/
 
 EXPOSE 3000
 
+RUN chown -R node:node /app
 USER node
 
 CMD ["node", "server.js"]
