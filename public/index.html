@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>qbit-voter</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
@@ -14,9 +15,12 @@
     <header>
       <div class="header-top">
         <h1><span class="dot"></span> qbit-voter</h1>
-        <div class="lang-switcher" id="lang-switcher"></div>
+        <div class="header-actions">
+          <div class="lang-switcher" id="lang-switcher"></div>
+          <button class="icon-btn" onclick="app.showSettings()" id="settings-btn" title="Settings">⚙</button>
+        </div>
       </div>
-      <div class="stats">
+      <div class="stats" id="stats-bar">
         <span id="pending-label"></span>
         <span>|</span>
         <button class="refresh-btn" onclick="app.loadTorrents()" id="refresh-btn"></button>
