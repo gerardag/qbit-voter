@@ -29,8 +29,10 @@ const app = (() => {
   function renderStaticUI() {
     const pendingLabel = document.getElementById('pending-label');
     const refreshBtn = document.getElementById('refresh-btn');
+    const markAllBtn = document.getElementById('mark-all-btn');
     if (pendingLabel) pendingLabel.innerHTML = `${i18n.t('pending')} <strong id="count">—</strong>`;
     if (refreshBtn) refreshBtn.textContent = i18n.t('refresh');
+    if (markAllBtn) markAllBtn.textContent = i18n.t('markAllVoted');
     const settingsBtn = document.getElementById('settings-btn');
     if (settingsBtn) settingsBtn.title = i18n.t('settings');
   }
@@ -267,6 +269,20 @@ const app = (() => {
     }
   }
 
+  async function markAllVoted() {
+    const pending = torrents.filter(t => !t.voted);
+    if (!pending.length) return;
+    await Promise.all(pending.map(async (torrent) => {
+      try {
+        const res = await fetch(`/api/torrents/${torrent.hash}/voted`, { method: 'POST' });
+        if (res.ok) torrent.voted = true;
+      } catch (err) {
+        console.error('Error marking as voted:', err);
+      }
+    }));
+    render();
+  }
+
   async function markVoted(index) {
     const torrent = torrents[index];
     try {
@@ -345,7 +361,7 @@ const app = (() => {
   }
 
   return {
-    init, loadTorrents, markVoted, switchLang,
+    init, loadTorrents, markVoted, markAllVoted, switchLang,
     showSettings, showList, saveQbit, saveTelegram, testQbit, testTelegram
   };
 })();

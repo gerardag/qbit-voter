@@ -272,6 +272,11 @@ header h1 .dot {
 }
 
 .refresh-btn {
+  margin-left: auto;
+}
+
+.refresh-btn,
+.mark-all-btn {
   font-family: var(--mono);
   font-size: 0.75rem;
   background: transparent;
@@ -283,10 +288,12 @@ header h1 .dot {
   transition: all 0.15s ease;
 }
 
-.refresh-btn:hover {
+.refresh-btn:hover,
+.mark-all-btn:hover {
   color: var(--text);
   border-color: var(--text-dim);
 }
+
 
 @media (max-width: 600px) {
   .torrent-item {

@@ -1,6 +1,7 @@
 {
   "pending": "Pending:",
   "refresh": "↻ Refresh",
+  "markAllVoted": "✓ Mark all voted",
   "connecting": "Connecting to qBittorrent...",
   "allTagged": "All torrents are tagged!",
   "vote": "★ Vote",
