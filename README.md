@@ -32,25 +32,30 @@ Then open `http://localhost:3000` in your browser.
 services:
   qbit-voter:
     image: ghcr.io/YOUR_USERNAME/qbit-voter:latest
-    container_port: 3000
     ports:
       - "3000:3000"
     environment:
       - QBIT_URL=http://qbittorrent:8080
       - QBIT_USER=admin
       - QBIT_PASS=adminadmin
+      - CONFIG_PATH=/app/data/config.json
+    volumes:
+      - ./data:/app/data
     restart: unless-stopped
 ```
+
+Settings saved through the UI (connection, notifications, language) are stored in `config.json`. Mount a volume at `/app/data` and set `CONFIG_PATH=/app/data/config.json` so they survive container restarts.
 
 ## Environment variables
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `QBIT_URL` | Yes | `http://localhost:8080` | qBittorrent Web UI URL |
-| `QBIT_USER` | Yes | `admin` | qBittorrent username |
-| `QBIT_PASS` | Yes | `adminadmin` | qBittorrent password |
+| `QBIT_URL` | No | `http://localhost:8080` | qBittorrent Web UI URL |
+| `QBIT_USER` | No | `admin` | qBittorrent username |
+| `QBIT_PASS` | No | `adminadmin` | qBittorrent password |
 | `VOTED_TAG` | No | `Liked` | Tag applied to torrents after voting |
 | `PORT` | No | `3000` | Port the app listens on |
+| `CONFIG_PATH` | No | `/app/config.json` | Path where settings are persisted. Mount a volume here to survive restarts. |
 
 ## Development
 
