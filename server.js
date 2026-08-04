@@ -136,11 +136,14 @@ function hasVotedTag(torrent, votedTag) {
 		.includes(target);
 }
 
+function hasNoTags(torrent) {
+	return !torrent || !torrent.tags || torrent.tags.trim() === "";
+}
+
 async function getUntaggedTorrents() {
 	const torrentsRes = await qbitRequest("/api/v2/torrents/info");
 	const torrents = await torrentsRes.json();
-	const votedTag = config.qbit.votedTag || "Liked";
-	const untagged = torrents.filter((t) => !hasVotedTag(t, votedTag));
+	const untagged = torrents.filter((t) => hasNoTags(t));
 
 	const results = [];
 	for (const torrent of untagged) {
@@ -172,7 +175,7 @@ async function getTorrentMetrics() {
 	for (const t of torrents) {
 		if (hasVotedTag(t, votedTag)) {
 			liked++;
-		} else {
+		} else if (hasNoTags(t)) {
 			untagged++;
 		}
 	}
