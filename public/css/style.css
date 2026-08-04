@@ -1,299 +1,154 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
+/* qbit-voter — app-specific layout only. Everything reusable (tokens,   */
+/* buttons, fields, cards, lists, badges…) lives in the design system.   */
+@import url("design-system.css");
 
-:root {
-  --bg: #0a0a0f;
-  --surface: #12121a;
-  --surface-hover: #1a1a26;
-  --border: #2a2a3a;
-  --text: #e0e0e8;
-  --text-dim: #6a6a80;
-  --accent: #4ade80;
-  --accent-dim: #22543d;
-  --warning: #f59e0b;
-  --mono: 'JetBrains Mono', monospace;
-  --sans: 'Space Grotesk', sans-serif;
+/* -------------------------------------------------------------------- */
+/*  Shell — exact port of claqueta's AppLayout                          */
+/*  <div class="flex flex-col min-h-full"><Header/><main class="mx-auto */
+/*  w-full max-w-[1024px] flex-1 px-4 py-4">{children}</main></div>      */
+/* -------------------------------------------------------------------- */
+html, body { height: 100%; }
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  min-height: 100vh;
-}
-
-.noise {
-  position: fixed;
-  inset: 0;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-}
-
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-  position: relative;
-  z-index: 1;
-}
-
-header {
-  margin-bottom: 2.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.header-top {
+/* wrapper: "ml-auto flex items-center gap-4 mobile-only" */
+.ml-auto {
+  margin-left: auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 1rem;
 }
 
-header h1 {
-  font-family: var(--mono);
-  font-size: 1.5rem;
+/* header: "sticky top-0 z-30 mx-auto flex h-[75px] w-full max-w-[1024px]  */
+/* items-center gap-4 backdrop-blur-lg px-4" — no Tailwind here, so wire   */
+/* these Tailwind classnames to real CSS directly on the tag.             */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  height: 75px;
+  width: 100%;
+  max-width: 1024px;
+  align-items: center;
+  gap: 1rem;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* main: "mx-auto w-full max-w-[1024px] flex-1 px-4 py-4" */
+main {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 1024px;
+  flex: 1;
+  padding: 1rem;
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   display: flex;
   align-items: center;
   gap: 0.6rem;
+  margin-bottom: 1.5rem;
 }
 
-header h1 .dot {
+.page-title .dot {
   width: 8px;
   height: 8px;
   background: var(--accent);
-  border-radius: 50%;
+  border-radius: var(--radius-pill);
   animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
-.lang-switcher {
-  display: flex;
-  gap: 2px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-.lang-btn {
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  font-weight: 600;
-  padding: 0.35rem 0.6rem;
-  background: transparent;
-  color: var(--text-dim);
-  border: none;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.lang-btn:hover {
-  color: var(--text);
-}
-
-.lang-btn.active {
-  background: var(--accent-dim);
-  color: var(--accent);
 }
 
 .stats {
   display: flex;
   gap: 1.5rem;
-  margin-top: 0.75rem;
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  color: var(--text-dim);
+  margin-bottom: 1.5rem;
+  font-size: 0.8125rem;
+  color: var(--muted);
   align-items: center;
 }
-
-.stats span strong {
-  color: var(--text);
-}
-
-.loading {
-  text-align: center;
-  padding: 4rem 0;
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  color: var(--text-dim);
-}
-
-.loading .spinner {
-  width: 24px;
-  height: 24px;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  margin: 0 auto 1rem;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.error {
-  text-align: center;
-  padding: 3rem;
-  color: #ef4444;
-  font-family: var(--mono);
-  font-size: 0.85rem;
-}
-
-.empty {
-  text-align: center;
-  padding: 4rem 0;
-  color: var(--text-dim);
-}
-
-.empty .icon { font-size: 2.5rem; margin-bottom: 1rem; }
-.empty p { font-size: 0.9rem; }
-
-.torrent-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.torrent-item {
-  background: var(--surface);
-  padding: 1rem 1.25rem;
+.stats span strong { color: var(--foreground); }
+.stats-group {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  transition: background 0.15s ease;
+  gap: 1.5rem;
+}
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--muted);
+}
+.stat-item svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex-shrink: 0;
+  display: block;
+}
+.stat-item strong { color: var(--foreground); font-size: 0.9375rem; line-height: 1; }
+
+/* Bigger, circular refresh / mark-all-voted icon buttons */
+#refresh-btn,
+#mark-all-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: var(--radius-pill);
+}
+#refresh-btn svg,
+#mark-all-btn svg {
+  width: 1.35rem;
+  height: 1.35rem;
 }
 
-.torrent-item:hover {
-  background: var(--surface-hover);
-}
-
-.torrent-item.voted {
-  opacity: 0.4;
-}
-
-.torrent-info {
-  flex: 1;
-  min-width: 0;
-}
-
+/* -------------------------------------------------------------------- */
+/*  Torrent list (uses .list .list--flush .list-item from the DS)        */
+/* -------------------------------------------------------------------- */
+.torrent-item { align-items: flex-start; }
+.torrent-item.voted { opacity: 0.4; }
+.torrent-info { flex: 1; min-width: 0; }
 .torrent-name {
-  font-family: var(--mono);
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: .875rem;
+  font-weight: 500;
   line-height: 1.4;
   word-break: break-word;
   margin-bottom: 0.35rem;
 }
-
 .torrent-meta {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--muted);
 }
-
 .torrent-meta .size {
-  background: var(--bg);
+  background: var(--background);
   padding: 0.15rem 0.45rem;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
 }
-
-.torrent-actions {
-  display: flex;
-  gap: 0.5rem;
-  flex-shrink: 0;
-}
-
-.btn {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 0.5rem 0.9rem;
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.btn-vote {
-  background: transparent;
-  color: var(--warning);
-  border-color: var(--warning);
-}
-
-.btn-vote:hover {
-  background: var(--warning);
-  color: var(--bg);
-}
-
-.btn-done {
-  background: transparent;
-  color: var(--accent);
-  border-color: var(--accent);
-}
-
-.btn-done:hover {
-  background: var(--accent);
-  color: var(--bg);
-}
-
-.btn-voted {
-  background: var(--accent-dim);
-  color: var(--accent);
-  border-color: var(--accent-dim);
-  cursor: default;
-}
-
-.btn-no-url {
-  background: transparent;
-  color: var(--text-dim);
-  border-color: var(--border);
-  cursor: default;
-}
-
-.refresh-btn {
-  margin-left: auto;
-}
-
-.refresh-btn,
-.mark-all-btn {
-  font-family: var(--mono);
+.torrent-meta .domain {
+  background: #a78bfa;
+  color: #ffffff;
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-pill);
   font-size: 0.75rem;
-  background: transparent;
-  color: var(--text-dim);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  padding: 0.4rem 0.8rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  font-weight: 500;
 }
-
-.refresh-btn:hover,
-.mark-all-btn:hover {
-  color: var(--text);
-  border-color: var(--text-dim);
-}
-
+.torrent-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
 
 @media (max-width: 600px) {
   .torrent-item {
@@ -301,104 +156,184 @@ header h1 .dot {
     align-items: flex-start;
     gap: 0.75rem;
   }
-  .torrent-actions {
-    width: 100%;
-  }
-  .torrent-actions .btn {
-    flex: 1;
-    justify-content: center;
-  }
+  .torrent-actions { width: 100%; }
+  .torrent-actions .btn { flex: 1; }
+
+  /* Icons small — all fit on pending's row */
+  .stats { gap: 0.75rem; }
 }
 
-.header-actions { display: flex; align-items: center; gap: 0.75rem; }
-.icon-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  font-size: 1rem;
-  width: 32px; height: 32px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-.icon-btn:hover { color: var(--text); border-color: var(--text-dim); }
-
+/* -------------------------------------------------------------------- */
+/*  Settings page                                                        */
+/* -------------------------------------------------------------------- */
 .settings-page { max-width: 640px; }
 .settings-topbar {
   display: flex; align-items: center; gap: 1rem;
   margin-bottom: 1.5rem;
 }
-.settings-topbar h2 { font-size: 1.1rem; font-weight: 600; }
+.settings-topbar h2 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.settings-section { margin-bottom: 1.25rem; }
 
-.settings-section {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 1.25rem;
-}
-.settings-section h3 {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-dim);
-  margin-bottom: 1rem;
-  font-weight: 600;
-}
-
-.field { display: block; margin-bottom: 1rem; font-size: 0.85rem; }
-.field > span {
-  display: block;
-  margin-bottom: 0.35rem;
-  color: var(--text-dim);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.field input[type="text"],
-.field input[type="password"],
-.field input[type="number"] {
-  width: 100%;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 6px;
-  padding: 0.6rem 0.75rem;
-  font-family: var(--mono);
-  font-size: 0.85rem;
-}
-.field input:focus { outline: none; border-color: var(--accent); }
-.checkbox-field { display: flex; align-items: center; gap: 0.5rem; }
-.checkbox-field > span {
-  margin: 0; text-transform: none; letter-spacing: 0;
-  font-size: 0.85rem; color: var(--text);
-}
-.checkbox-field input[type="checkbox"] { margin: 0; }
-
-.hint { font-size: 0.75rem; color: var(--text-dim); margin: 0.25rem 0 0.75rem; line-height: 1.4; }
-.row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-.settings-msg { font-size: 0.8rem; min-height: 1.1em; }
-.settings-msg.ok { color: var(--accent); }
-.settings-msg.err { color: #ef4444; }
-
-.settings-footer {
-  display: flex; align-items: center; gap: 0.75rem;
-  padding-top: 0.5rem;
-}
-.btn-primary {
-  background: var(--accent); color: var(--bg);
-  border: none; padding: 0.55rem 1.1rem;
-  border-radius: 6px; cursor: pointer; font-weight: 600;
-  font-family: var(--sans);
-  font-size: 0.85rem;
-}
-.btn-primary:hover { opacity: 0.9; }
-.btn-secondary {
-  background: transparent; color: var(--text);
-  border: 1px solid var(--border);
-  padding: 0.55rem 1.1rem; border-radius: 6px; cursor: pointer;
-  font-family: var(--sans); font-size: 0.85rem;
-}
-.btn-secondary:hover { border-color: var(--text-dim); }
+.settings-msg { font-size: 0.875rem; min-height: 1.1em; }
+.settings-msg.ok { color: var(--success); }
+.settings-msg.err { color: var(--danger); }
 
 .section-actions { margin-top: 0.5rem; }
+
+/* ==================================================================== */
+/*  Header chrome — exact port of claqueta (theme-selector,             */
+/*  desktop-user-corner, mobile-menu). Vanilla CSS from its Tailwind.   */
+/* ==================================================================== */
+
+/* --- Theme selector (theme-selector.tsx) --------------------------- */
+/* <div class="inline-flex gap-1"> + round icon buttons               */
+.theme-selector {
+  display: inline-flex; gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+}
+.theme-selector button {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0.375rem;                 /* p-1.5 */
+  border: none; background: transparent; cursor: pointer;
+  border-radius: var(--radius-pill); /* rounded-full */
+  color: var(--muted);               /* inactive */
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.theme-selector button:hover { color: var(--foreground); }
+.theme-selector button.is-active { background: var(--accent); color: var(--accent-fg); }
+.theme-selector button svg { width: 1rem; height: 1rem; } /* size-4 */
+/* variant="menu" (inside the ink mobile sheet) */
+.theme-selector--menu { align-self: flex-start; border-color: color-mix(in srgb, var(--paper) 15%, transparent); }
+.theme-selector--menu button { color: color-mix(in srgb, var(--paper) 70%, transparent); }
+.theme-selector--menu button:hover { color: var(--paper); }
+.theme-selector--menu button.is-active {
+  background: color-mix(in srgb, var(--paper) 15%, transparent);
+  color: var(--paper);
+}
+
+/* --- Language selector (same look as theme selector, text labels) -- */
+.theme-selector + .lang-selector { margin-top: -1.5rem; } /* tighten gap to theme selector */
+.lang-selector {
+  display: inline-flex; gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+}
+.lang-selector button {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0.25rem 0.6rem;
+  border: none; background: transparent; cursor: pointer;
+  border-radius: var(--radius-pill);
+  color: var(--muted);
+  font-size: 0.75rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.lang-selector button:hover { color: var(--foreground); }
+.lang-selector button.is-active { background: var(--accent); color: var(--accent-fg); }
+.lang-selector--menu { align-self: flex-start; border-color: color-mix(in srgb, var(--paper) 15%, transparent); }
+.lang-selector--menu button { color: color-mix(in srgb, var(--paper) 70%, transparent); }
+.lang-selector--menu button:hover { color: var(--paper); }
+.lang-selector--menu button.is-active {
+  background: color-mix(in srgb, var(--paper) 15%, transparent);
+  color: var(--paper);
+}
+
+/* --- Desktop bottom-left corner (desktop-user-corner.tsx) ----------- */
+/* hidden md:block fixed z-30 group  { left:32; bottom:32 }            */
+.user-corner { position: fixed; left: 32px; bottom: 32px; z-index: 30; }
+.user-corner__trigger {
+  display: block; padding: 0; border: none; background: none;
+  cursor: pointer; border-radius: var(--radius-pill);
+}
+.user-corner__avatar {                 /* UserAvatar size-9 fallback */
+  display: flex; align-items: center; justify-content: center;
+  width: 2.25rem; height: 2.25rem;     /* size-9 */
+  border-radius: var(--radius-pill);
+  background: var(--surface); color: var(--muted);
+}
+.user-corner__avatar svg { width: 1.25rem; height: 1.25rem; } /* size-5 */
+/* group-hover popover, opens upward: absolute bottom-full left-0 ... */
+.user-corner__pop {
+  position: absolute; bottom: 100%; left: 0;
+  display: flex; flex-direction: column; width: max-content;
+  gap: 2rem;                           /* gap-8 */
+  padding-bottom: 1rem;                /* pb-4 (hover bridge) */
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+.user-corner:hover .user-corner__pop,
+.user-corner:focus-within .user-corner__pop { opacity: 1; pointer-events: auto; }
+.user-corner__links { display: flex; flex-direction: column; gap: 0.75rem; } /* gap-3 */
+.corner-link {
+  font-size: 0.875rem; font-weight: 500;      /* text-sm font-medium */
+  color: var(--muted); text-decoration: none; cursor: pointer;
+  transition: color 0.15s ease; background: none; border: none;
+  padding: 0; text-align: left;
+}
+.corner-link:hover, .corner-link.is-active { color: var(--foreground); }
+
+/* --- Mobile three-dots trigger (MenuDotsIcon) ---------------------- */
+.mobile-menu-btn {
+  display: flex; align-items: center; padding: 0;
+  border: none; background: none; cursor: pointer;
+  color: var(--muted); transition: color 0.15s ease;
+}
+.mobile-menu-btn:hover { color: var(--foreground); }
+.mobile-menu-btn[hidden] { display: none; }
+.menu-dots { height: 1.75rem; width: 5.6px; }  /* h-7 w-[5.6px] */
+
+/* --- Header close trigger (shown instead of dots while in settings) - */
+.header-close-btn { position: relative; width: 1.75rem; height: 1.75rem; background: none; border: none; cursor: pointer; color: var(--muted); transition: color 0.15s ease; }
+.header-close-btn:hover { color: var(--foreground); }
+.header-close-btn[hidden] { display: none; }
+.header-close-btn span {
+  position: absolute; left: 50%; top: 50%;
+  height: 2.5px; width: 1.75rem; border-radius: var(--radius-pill);
+  background: currentColor;
+}
+.header-close-btn span:nth-child(1) { transform: translate(-50%, -50%) rotate(45deg); }
+.header-close-btn span:nth-child(2) { transform: translate(-50%, -50%) rotate(-45deg); }
+
+/* --- Mobile full-screen menu (mobile-menu.tsx) --------------------- */
+/* fixed inset-0 z-50 flex flex-col bg-ink text-paper                  */
+.mobile-menu {
+  position: fixed; inset: 0; z-index: 50;
+  display: flex; flex-direction: column;
+  background: var(--ink); color: var(--paper);
+  overflow-y: auto; overscroll-behavior: contain;
+}
+.mobile-menu[hidden] { display: none; }
+.mobile-menu__top {                    /* flex h-[75px] items-center justify-end px-4 */
+  display: flex; align-items: center; justify-content: flex-end;
+  height: 75px; padding: 0 1rem;
+}
+.mobile-menu__close { position: relative; width: 1.75rem; height: 1.75rem; background: none; border: none; cursor: pointer; }
+.mobile-menu__close span {             /* the two rotated bars */
+  position: absolute; left: 50%; top: 50%;
+  height: 2.5px; width: 1.75rem; border-radius: var(--radius-pill);
+  background: var(--paper);
+}
+.mobile-menu__close span:nth-child(1) { transform: translate(-50%, -50%) rotate(45deg); }
+.mobile-menu__close span:nth-child(2) { transform: translate(-50%, -50%) rotate(-45deg); }
+.mobile-menu__nav { display: flex; flex: 1; flex-direction: column; padding: 0.5rem 1rem; } /* flex-1 px-4 py-2 */
+.mobile-menu__bottom {                 /* flex flex-col gap-8 border-t border-paper/15 px-4 py-3 */
+  display: flex; flex-direction: column; gap: 2rem;
+  border-top: 1px solid color-mix(in srgb, var(--paper) 15%, transparent);
+  padding: 0.75rem 1rem;
+  padding-bottom: calc(var(--safe-bottom) + 2rem);
+}
+.mobile-menu__links { display: flex; flex-direction: column; gap: 0.75rem; } /* gap-3 */
+.mobile-link {
+  font-size: 0.875rem; font-weight: 500;
+  color: color-mix(in srgb, var(--paper) 70%, transparent);
+  text-decoration: none; cursor: pointer; transition: color 0.15s ease;
+  background: none; border: none; padding: 0; text-align: left;
+}
+.mobile-link:hover, .mobile-link.is-active { color: var(--paper); }

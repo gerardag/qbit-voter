@@ -6,32 +6,102 @@
   <title>qbit-voter</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
+  <script>
+    (function () {
+      var t = localStorage.getItem('theme') || 'dark';
+      if (t === 'dark') document.documentElement.removeAttribute('data-theme');
+      else document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
-  <div class="noise"></div>
-  <div class="container">
-    <header>
-      <div class="header-top">
-        <h1><span class="dot"></span> qbit-voter</h1>
-        <div class="header-actions">
-          <div class="lang-switcher" id="lang-switcher"></div>
-          <button class="icon-btn" onclick="app.showSettings()" id="settings-btn" title="Settings">⚙</button>
-        </div>
-      </div>
-      <div class="stats" id="stats-bar">
-        <span id="pending-label"></span>
-        <button class="refresh-btn" onclick="app.loadTorrents()" id="refresh-btn"></button>
-        <button class="mark-all-btn" onclick="app.markAllVoted()" id="mark-all-btn"></button>
+  <div class="app-shell">
+    <header class="sticky top-0 z-30 mx-auto flex h-[75px] w-full max-w-[1024px] items-center gap-4 backdrop-blur-lg px-4">
+      <div class="ml-auto flex items-center gap-4 mobile-only">
+        <button class="mobile-menu-btn" onclick="app.toggleMenu(true)" id="mobile-menu-btn" aria-haspopup="true" aria-label="Menu">
+          <svg class="menu-dots" viewBox="0 0 30 150" fill="currentColor" aria-hidden="true">
+            <circle cx="15" cy="20" r="15"/><circle cx="15" cy="75" r="15"/><circle cx="15" cy="130" r="15"/>
+          </svg>
+        </button>
+        <button class="header-close-btn" onclick="app.showList()" id="header-close-btn" aria-label="Close" hidden>
+          <span></span><span></span>
+        </button>
       </div>
     </header>
-    <main id="app">
-      <div class="loading">
-        <div class="spinner"></div>
-        <span id="loading-text"></span>
+
+    <!-- Desktop bottom-left corner (port of desktop-user-corner.tsx) -->
+    <div class="user-corner desktop-only" id="user-corner">
+      <button type="button" class="user-corner__trigger" onclick="app.showSettings()" aria-label="Settings">
+        <span class="user-corner__avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/><path d="M4 21c0-3.9 3.6-7 8-7s8 3.1 8 7"/>
+          </svg>
+        </span>
+      </button>
+      <div class="user-corner__pop">
+        <div class="theme-selector" id="theme-selector-d"></div>
+        <div class="lang-selector" id="lang-switcher-d"></div>
+        <div class="user-corner__links">
+          <button type="button" class="corner-link" id="settings-link-d" onclick="app.showSettings()"></button>
+        </div>
+      </div>
+    </div>
+
+    <main class="mx-auto w-full max-w-[1024px] flex-1 px-4 py-4">
+      <h1 id="app-title" class="page-title"></h1>
+      <div class="stats" id="stats-bar">
+        <div class="stats-group">
+          <span class="stat-item" id="pending-stat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>
+            </svg>
+            <strong id="count">—</strong>
+          </span>
+          <span class="stat-item" id="downloading-stat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3v12m0 0 5-5m-5 5-5-5M5 21h14"/>
+            </svg>
+            <strong id="downloading-count">—</strong>
+          </span>
+        </div>
+        <button class="btn btn--ghost btn--sm btn--icon push-right" onclick="app.loadTorrents()" id="refresh-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/>
+          </svg>
+        </button>
+        <button class="btn btn--primary btn--sm btn--square" onclick="app.markAllVoted()" id="mark-all-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+        </button>
+      </div>
+      <div id="app">
+        <div class="loading">
+          <div class="spinner"></div>
+          <span id="loading-text"></span>
+        </div>
       </div>
     </main>
+
+    <!-- Mobile full-screen menu (port of mobile-menu.tsx) -->
+    <div class="mobile-menu" id="mobile-menu" hidden>
+      <div class="mobile-menu__top">
+        <button class="mobile-menu__close" onclick="app.toggleMenu(false)" id="mobile-close" aria-label="Close menu">
+          <span></span><span></span>
+        </button>
+      </div>
+      <nav class="mobile-menu__nav"></nav>
+      <div class="mobile-menu__bottom">
+        <div class="theme-selector theme-selector--menu" id="theme-selector-m"></div>
+        <div class="lang-selector lang-selector--menu" id="lang-switcher-m"></div>
+        <div class="mobile-menu__links">
+          <button type="button" class="mobile-link" id="settings-link-m" onclick="app.showSettings(); app.toggleMenu(false)"></button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="/js/i18n.js"></script>
