@@ -91,10 +91,7 @@ async function qbitLoginWith(url, user, password) {
 		);
 	}
 	if (text === "Fails.") throw new Error("Invalid username or password");
-	if (text !== "Ok.")
-		throw new Error(
-			`Unexpected response from qBittorrent: ${text.slice(0, 120) || "(empty)"}`,
-		);
+	if (text !== 'Ok.' && text !== '' && res.status !== 204) throw new Error(`Unexpected response from qBittorrent: ${text.slice(0, 120) || '(empty)'}`);
 	const setCookie = res.headers.get("set-cookie");
 	return setCookie ? setCookie.split(";")[0] : null;
 }
