@@ -130,6 +130,15 @@ async function qbitRequest(endpoint, options = {}) {
 	return res;
 }
 
+function hasVotedTag(torrent, votedTag) {
+	if (!torrent || !torrent.tags) return false;
+	const target = String(votedTag || "").trim().toLowerCase();
+	return torrent.tags
+		.split(",")
+		.map((t) => t.trim().toLowerCase())
+		.includes(target);
+}
+
 async function getUntaggedTorrents() {
 	const torrentsRes = await qbitRequest("/api/v2/torrents/info");
 	const torrents = await torrentsRes.json();
@@ -154,10 +163,28 @@ async function getUntaggedTorrents() {
 	return results;
 }
 
-async function countUntaggedTorrents() {
+async function getTorrentMetrics() {
 	const torrentsRes = await qbitRequest("/api/v2/torrents/info");
 	const torrents = await torrentsRes.json();
-	return torrents.filter((t) => !t.tags || t.tags.trim() === "").length;
+	const votedTag = config.qbit.votedTag || "Liked";
+
+	let untagged = 0;
+	let liked = 0;
+
+	for (const t of torrents) {
+		if (hasVotedTag(t, votedTag)) {
+			liked++;
+		} else {
+			untagged++;
+		}
+	}
+
+	return { untagged, liked, votedTag };
+}
+
+async function countUntaggedTorrents() {
+	const metrics = await getTorrentMetrics();
+	return metrics.untagged;
 }
 
 async function sendTelegramMessage(text, botToken, chatId) {
@@ -381,6 +408,27 @@ app.post("/api/torrents/:hash/voted", async (req, res) => {
 	} catch (err) {
 		console.error("Error tagging torrent:", err);
 		res.status(500).json({ error: err.message });
+	}
+});
+
+app.get("/metrics", async (req, res) => {
+	try {
+		const { untagged } = await getTorrentMetrics();
+		const body = `# HELP qbit_voter_untagged_torrents Total number of untagged torrents (torrents without the voted tag).
+# TYPE qbit_voter_untagged_torrents gauge
+qbit_voter_untagged_torrents ${untagged}
+# EOF
+`;
+		const accept = req.headers.accept || "";
+		const contentType = accept.includes("application/openmetrics-text")
+			? "application/openmetrics-text; version=1.0.0; charset=utf-8"
+			: "text/plain; version=0.0.4; charset=utf-8";
+
+		res.setHeader("Content-Type", contentType);
+		res.send(body);
+	} catch (err) {
+		console.error("Error generating metrics:", err);
+		res.status(500).send(`# ERROR ${err.message}\n`);
 	}
 });
 
